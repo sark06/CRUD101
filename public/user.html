@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard</title>
+</head>
+<body>
+  <h1>User Dashboard</h1>
+  
+  <!-- Update Details Section -->
+  <h2>Update User Details</h2>
+  <form id="updateForm">
+    <label for="userId">User ID: </label>
+    <input type="number" id="userId" name="userId" required><br><br>
+
+    <label for="newUsername">New Username: </label>
+    <input type="text" id="newUsername" name="newUsername"><br><br>
+
+    <label for="newEmail">New Email: </label>
+    <input type="email" id="newEmail" name="newEmail"><br><br>
+
+    <label for="newPassword">New Password: </label>
+    <input type="password" id="newPassword" name="newPassword"><br><br>
+
+    <button type="submit">Update Details</button>
+  </form>
+
+  <hr>
+
+  <!-- Delete Account Section -->
+  <h2>Delete Account</h2>
+  <form id="deleteForm">
+    <label for="deleteUserId">User ID: </label>
+    <input type="number" id="deleteUserId" name="deleteUserId" required><br><br>
+
+    <button type="submit">Delete Account</button>
+  </form>
+
+  <script>
+    // Update Details Script
+    const updateForm = document.getElementById('updateForm');
+    updateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const newUsername = document.getElementById('newUsername').value;
+      const newEmail = document.getElementById('newEmail').value;
+      const newPassword = document.getElementById('newPassword').value;
+
+      const updatedData = {};
+      if (newUsername) updatedData.username = newUsername;
+      if (newEmail) updatedData.email = newEmail;
+      if (newPassword) updatedData.password = newPassword;
+
+      try {
+        const response = await fetch(`http://localhost:3000/user/update/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedData)
+        });
+
+        if (response.ok) {
+          alert('User details updated!');
+          updateForm.reset();
+        } else {
+          alert('Error updating details.');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+
+    // Delete Account Script
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('deleteUserId').value;
+
+      try {
+        const response = await fetch(`http://localhost:3000/user/delete/${userId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          alert('User deleted!');
+          deleteForm.reset();
+        } else {
+          alert('Error deleting user.');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
